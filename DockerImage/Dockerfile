@@ -7,6 +7,7 @@ RUN pip install html2text
 RUN pip install beautifulsoup4
 RUN pip install langid
 RUN pip install roman
+RUN pip install joblib
 
 COPY ./code/ /src/
 WORKDIR /src

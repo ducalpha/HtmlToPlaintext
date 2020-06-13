@@ -13,6 +13,7 @@ from bs4 import Comment
 from collections import Counter
 
 import html2text
+from joblib import cpu_count, delayed, Parallel
 
 import langid
 import roman
@@ -568,6 +569,7 @@ def getOutputFilename(filename, outputDir):
 	return os.path.join(outputDir, '{}.txt'.format(os.path.splitext(os.path.basename(filename))[0]))	
 
 def processFile(filename, outputDir=None):
+	print 'Process {}'.format(filename)
 	try:
 		outputfilename = '{}.txt'.format(os.path.splitext(os.path.basename(filename))[0])
 		if os.path.isfile(outputfilename):
@@ -585,10 +587,14 @@ def processFile(filename, outputDir=None):
 		print 'Error: \"{}\" is not English'.format(filename)
 
 def processDirectory(directory, outputDir=None):
+	all_files = []
 	for root,dirs,files in os.walk(directory):
 		for f in files:
-			print os.path.join(root, f)
-			processFile(os.path.join(root, f), outputDir)
+			all_files.append(os.path.join(root, f))
+
+        executor = Parallel(n_jobs=cpu_count() // 2)
+        tasks = [delayed(processFile)(f, outputDir) for f in all_files]
+        executor(tasks)
 
 if __name__ =='__main__':
 	aparser = argparse.ArgumentParser(description='Converts and preprocesses an html privacy policy to plaintext.')
