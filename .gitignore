@@ -1,3 +1,5 @@
 ext/
 __pycache__/
 *.swp
+*.pyc
+*.log

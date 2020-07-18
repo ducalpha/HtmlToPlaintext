@@ -1,0 +1,7 @@
+beautifulsoup4
+html2text
+langid
+roman
+joblib
+pathlib2
+python-dotenv
